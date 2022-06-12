@@ -1,0 +1,41 @@
+[project]
+name = "tiny-market"
+authors = []
+description = ""
+telemetry = true
+requirements = []
+cache_dir = "/Users/alacret/.clarinet/cache"
+boot_contracts = ["pox", "costs-v2", "bns"]
+
+[contracts.sip009-nft]
+path = "contracts/sip009-nft.clar"
+depends_on = []
+
+[contracts.sip009-nft-trait]
+path = "contracts/sip009-nft-trait.clar"
+depends_on = [] 
+
+[contracts.sip010-ft]
+path = "contracts/sip010-ft.clar"
+depends_on = []
+
+[contracts.sip010-ft-trait]
+path = "contracts/sip010-ft-trait.clar"
+depends_on = []
+
+[contracts.tiny-market]
+path = "contracts/tiny-market.clar"
+depends_on = ["sip009-nft-trait", "sip010-ft-trait"]
+
+[repl]
+costs_version = 2
+parser_version = 2
+
+[repl.analysis]
+passes = ["check_checker"]
+
+[repl.analysis.check_checker]
+strict = false
+trusted_sender = false
+trusted_caller = false
+callee_filter = false
