@@ -1,5 +1,5 @@
 [project]
-name = "tiny-market"
+name = "bitbasel-marketplace"
 authors = []
 description = ""
 telemetry = true
@@ -7,25 +7,13 @@ requirements = []
 cache_dir = "/Users/alacret/.clarinet/cache"
 boot_contracts = ["pox", "costs-v2", "bns"]
 
-[contracts.sip009-nft]
-path = "contracts/sip009-nft.clar"
+[contracts.traits]
+path = "contracts/traits.clar"
 depends_on = []
 
-[contracts.sip009-nft-trait]
-path = "contracts/sip009-nft-trait.clar"
-depends_on = [] 
-
-[contracts.sip010-ft]
-path = "contracts/sip010-ft.clar"
-depends_on = []
-
-[contracts.sip010-ft-trait]
-path = "contracts/sip010-ft-trait.clar"
-depends_on = []
-
-[contracts.tiny-market]
-path = "contracts/tiny-market.clar"
-depends_on = ["sip009-nft-trait", "sip010-ft-trait"]
+[contracts.bitbasel-marketplace]
+path = "contracts/bitbasel-marketplace.clar"
+depends_on = ["traits"]
 
 [repl]
 costs_version = 2
