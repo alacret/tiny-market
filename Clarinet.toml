@@ -11,6 +11,10 @@ boot_contracts = ["pox", "costs-v2", "bns"]
 path = "contracts/traits.clar"
 depends_on = []
 
+[contracts.test-token]
+path = "contracts/test-token.clar"
+depends_on = ["traits"]
+
 [contracts.bitbasel-marketplace]
 path = "contracts/bitbasel-marketplace.clar"
 depends_on = ["traits"]
