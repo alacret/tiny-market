@@ -1,10 +1,10 @@
 (use-trait nft-trait .traits.sip009-nft-trait)
 (use-trait ft-trait .traits.sip010-ft-trait)
 
-(define-constant contract-owner tx-sender)
-
+;; main errors
+(define-constant err-owner-only (err u1000))
 ;; listing errors
-(define-constant err-expiry-in-past (err u1000))
+(define-constant err-expiry-in-past (err u1001))
 (define-constant err-price-zero (err u1001))
 
 ;; cancelling and fulfiling errors
@@ -17,7 +17,7 @@
 (define-constant err-unintended-taker (err u2006))
 (define-constant err-asset-contract-not-whitelisted (err u2007))
 (define-constant err-payment-contract-not-whitelisted (err u2008))
-
+;; variables
 (define-map listings
 	uint
 	{
@@ -30,20 +30,42 @@
 		payment-asset-contract: (optional principal)
 	}
 )
-
 (define-data-var listing-nonce uint u0)
-
+(define-data-var contract-paused bool true)
 (define-map whitelisted-asset-contracts principal bool)
+(define-data-var contract-owner principal tx-sender)
 
-(define-read-only (is-whitelisted (asset-contract principal))
-	(default-to false (map-get? whitelisted-asset-contracts asset-contract))
+;; owner feature
+(define-read-only (get-contract-owner)
+	(ok (var-get contract-owner))
+)
+(define-read-only (is-contract-owner)
+	(ok (is-eq (var-get contract-owner) tx-sender))
+)
+(define-public (set-contract-owner (new-contract-owner principal))
+	(begin
+		(asserts! (is-eq (var-get contract-owner) tx-sender) err-owner-only)
+		(ok (var-set contract-owner new-contract-owner))
+	)
 )
 
-(define-public (set-whitelisted (asset-contract principal) (whitelisted bool))
+;; paused feature
+(define-read-only (get-contract-paused)
+	(ok (var-get contract-paused))
+)
+(define-read-only (is-contract-paused)
+	(ok (is-eq (var-get contract-paused) true))
+)
+(define-public (set-paused (new-contract-paused bool))
 	(begin
-		(asserts! (is-eq contract-owner tx-sender) err-unauthorised)
-		(ok (map-set whitelisted-asset-contracts asset-contract whitelisted))
+		(asserts! (is-eq (var-get contract-owner) tx-sender) err-owner-only)
+		(ok (var-set contract-paused new-contract-paused))
 	)
+)
+
+;; whitelisted feature
+(define-read-only (is-whitelisted (asset-contract principal))
+	(default-to false (map-get? whitelisted-asset-contracts asset-contract))
 )
 
 (define-private (transfer-nft (token-contract <nft-trait>) (token-id uint) (sender principal) (recipient principal))
